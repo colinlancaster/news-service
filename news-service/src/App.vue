@@ -1,32 +1,31 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+    <h1>Status: {{ (status === "ok") ? "All well" : "Something is wrong" }}</h1>
+    <h2>We've got {{ totalResults }} articles for your pleasure viewing</h2>
+    <li v-for="article in articles" v-bind:key="article.title">{{ article.author ? article.author : "No Author Listed" }}</li>
   </div>
 </template>
 
 <script>
 export default {
   name: 'app',
-  data () {
+  data: function() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      status: "",
+      articles: [],
+      totalResults: 0,
     }
-  }
+    
+  },
+  mounted() {
+    fetch("https://newsapi.org/v2/top-headlines?country=us&apiKey=c511282b17444f01bbd571a90aa24a1b")
+      .then(response => response.json())
+      .then((data) => {
+        this.status = data.status;
+        this.articles = data.articles;
+        this.totalResults = data.totalResults;
+      })
+  },
 }
 </script>
 
